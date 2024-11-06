@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { colors } from "../styles/Global.style.tsx";
 
-export const buttonIconStyle = {
+export const buttonStyle = {
   container: css({
     border: "none",
     backgroundColor: "transparent",

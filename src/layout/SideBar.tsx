@@ -3,9 +3,9 @@ import { useCallback, useState } from "react";
 import menu from "../assets/Menu.svg";
 import closeRound from "../assets/Close_Round.svg";
 import addButton from "../assets/Add_round_fill.svg";
-import { ButtonIcon } from "../components/ButtonIcon.tsx";
+import { Button } from "../components/Button.tsx";
 import { sideBarStyle } from "./SideBar.style.ts";
-import { Board } from "../interfaces";
+import { Board } from "../types";
 
 interface SideBarProps {
   openNewBoard: () => void;
@@ -13,47 +13,44 @@ interface SideBarProps {
 }
 
 export const SideBar = ({ openNewBoard, board }: SideBarProps) => {
-  const [isActiveSideBar, setIsActiveSideBar] = useState(false);
+  const [isSideBarOpen, setIsSideBarOpen] = useState(false);
   const toggleSideBar = () => {
-    setIsActiveSideBar((prev) => !prev);
+    setIsSideBarOpen((prev) => !prev);
   };
 
   const renderBoardButtons = useCallback(
     () =>
       board.map((item) => (
-        <ButtonIcon
+        <Button
           onClick={openNewBoard}
-          src={item.logo}
-          text={isActiveSideBar ? item.boardName : ""}
+          icon={item.logo}
+          text={isSideBarOpen ? item.boardName : ""}
           key={item.id}
         />
       )),
-    [board, openNewBoard, isActiveSideBar],
+    [board, openNewBoard, isSideBarOpen],
   );
 
   return (
     <>
       <div css={sideBarStyle.container}>
         <div
-          css={[
-            sideBarStyle.sideBarOpen,
-            isActiveSideBar && sideBarStyle.active,
-          ]}
+          css={[sideBarStyle.sideBarOpen, isSideBarOpen && sideBarStyle.active]}
         >
-          <ButtonIcon onClick={toggleSideBar} src={closeRound} text={""} />
+          <Button onClick={toggleSideBar} icon={closeRound} text={""} />
           {renderBoardButtons()}
-          <ButtonIcon
+          <Button
             onClick={openNewBoard}
-            src={addButton}
+            icon={addButton}
             text={"Add new board"}
           />
         </div>
       </div>
 
       <div css={sideBarStyle.sideBarClose}>
-        <ButtonIcon onClick={toggleSideBar} src={menu} text={""} />
+        <Button onClick={toggleSideBar} icon={menu} text={""} />
         {renderBoardButtons()}
-        <ButtonIcon onClick={openNewBoard} src={addButton} text={""} />
+        <Button onClick={openNewBoard} icon={addButton} text={""} />
       </div>
     </>
   );
