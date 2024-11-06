@@ -1,33 +1,58 @@
+/** @jsxImportSource @emotion/react */
+import { GlobalStyles } from "./styles/Global.style.tsx";
+import { SideBar } from "./layout/SideBar.tsx";
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { Modal } from "./components/Modal.tsx";
+import { appStyle } from "./App.style.ts";
+import { boardData } from "./constants";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [boardName, setBoardName] = useState("");
+  const [logoSrc, setLogoSrc] = useState("");
+  const [board, setBoard] = useState(boardData);
+
+  const boardLogos = Array.from(
+    { length: 13 },
+    (_, i) => `/src/assets/board-logo-${String(i + 1).padStart(2, "0")}.svg`,
+  );
+
+  const openNewBoard = () => {
+    setOpenModal(true);
+  };
+
+  const handleChooseLogo = (e: string) => {
+    setLogoSrc(e);
+  };
+
+  const handleCreateNewBoard = () => {
+    const newBoard = {
+      id: board.length > 0 ? board[board.length - 1].id + 1 : 1,
+      boardName: boardName,
+      logo: logoSrc,
+    };
+    setBoard([...board, newBoard]);
+    setBoardName("");
+    setLogoSrc("");
+    setOpenModal(false);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <GlobalStyles />
+      <div css={[appStyle.container, openModal && appStyle.activeBlur]}>
+        <SideBar board={board} openNewBoard={openNewBoard} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Modal
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        boardLogos={boardLogos}
+        setBoardName={setBoardName}
+        handleChooseLogo={handleChooseLogo}
+        logoSrc={logoSrc}
+        handleCreateNewBoard={handleCreateNewBoard}
+        boardName={boardName}
+      />
     </>
   );
 }
